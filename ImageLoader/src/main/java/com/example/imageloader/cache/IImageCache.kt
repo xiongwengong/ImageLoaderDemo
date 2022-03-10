@@ -11,12 +11,12 @@ interface IImageCache {
     /**
      *  cache bitmap
      */
-    fun put(url: String, bitmap: Bitmap?);
+    fun put(url: String, bitmap: Bitmap?) // todo  null?
 
 
     /**
      * get bitmap from cache
      * maybe return null
      */
-    fun get(url: String, requireWidth: Int, requireHeight: Int): Bitmap?;
+    fun get(url: String, requireWidth: Int, requireHeight: Int): Bitmap?
 }

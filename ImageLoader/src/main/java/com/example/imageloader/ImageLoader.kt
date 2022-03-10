@@ -1,10 +1,8 @@
 package com.example.imageloader
 
-import android.widget.ImageView
+import android.content.Context
+import com.example.imageloader.request.BitmapRequest
 
 object ImageLoader {
-
-    fun display(url: String, imageview: ImageView) {
-
-    }
+    fun with(context: Context) = BitmapRequest(context.applicationContext)
 }
