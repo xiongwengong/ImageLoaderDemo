@@ -2,7 +2,7 @@ package com.example.imageloader.cache
 
 import android.graphics.Bitmap
 import android.util.LruCache
-import com.example.imageloader.utils.generateKeyByUrl
+import com.example.imageloader.extensions.generateMd5KeyByUrl
 
 class MemoryCache(private val maxSize: Int) : IImageCache {
     private val lruCache: LruCache<String, Bitmap> by lazy {
@@ -18,10 +18,10 @@ class MemoryCache(private val maxSize: Int) : IImageCache {
     }
 
     override fun get(url: String, requireWidth: Int, requireHeight: Int): Bitmap? {
-        return lruCache.get(url.generateKeyByUrl())
+        return lruCache.get(url.generateMd5KeyByUrl())
     }
 
-    override fun put(url: String, bitmap: Bitmap?) {
-        bitmap?.let { lruCache.put(url.generateKeyByUrl(), it) }
+    override fun put(url: String, bitmap: Bitmap) {
+        bitmap.let { lruCache.put(url.generateMd5KeyByUrl(), it) }
     }
 }

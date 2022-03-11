@@ -22,16 +22,12 @@ class DiskCacheTest {
 
     private lateinit var mockBitmap: Bitmap
 
-    private val KEY_URL = "key_url" // todo
-
-    private val diskCacheMaxSize = 50 * 1024 * 1024 // 50MB
-
     @Before
     fun setUp() {
         mockBitmap = mockk(relaxed = true)
         val cachePath = ApplicationProvider.getApplicationContext<Context>().cacheDir
             .absolutePath + File.separator + "twImageLoader"
-        diskCache = DiskCache(diskCacheMaxSize, cachePath)
+        diskCache = DiskCache(DISK_CACHE_MAX_SIZE, cachePath)
     }
 
     @Test
@@ -45,10 +41,16 @@ class DiskCacheTest {
     fun `given exist url when get cache then return value`() {
         diskCache.put(KEY_URL, mockBitmap)
 
-        val reqSize = 100
-        val cachedBitmap = diskCache.get(KEY_URL, reqSize, reqSize)
+        val cachedBitmap =
+            diskCache.get(KEY_URL, REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE)
         cachedBitmap?.let {
-            assertTrue(it.width <= reqSize && it.height <= reqSize)
+            assertTrue(it.width <= REQUIRE_BITMAP_SIZE && it.height <= REQUIRE_BITMAP_SIZE)
         }
+    }
+
+    companion object {
+        private const val KEY_URL = "KEY_URL"
+        private const val REQUIRE_BITMAP_SIZE = 100
+        private const val DISK_CACHE_MAX_SIZE = 50 * 1024 * 1024 // 50MB
     }
 }

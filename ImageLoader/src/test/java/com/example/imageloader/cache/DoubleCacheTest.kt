@@ -27,15 +27,14 @@ class DoubleCacheTest {
     }
 
     @Test
-    fun `given there is no cache `() { // todo
-        val reqSize = 100
+    fun `given there is no cache when try to get cache then return null`() {
         every { memoryCache.get(any(), any(), any()) } returns null
         every { diskCache.get(any(), any(), any()) } returns null
 
-        val bitmap = doubleCache.get("test.png", reqSize, reqSize)
+        val bitmap = doubleCache.get("test.png", REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE)
 
-        verify { memoryCache.get(any(), reqSize, reqSize) }
-        verify { diskCache.get(any(), reqSize, reqSize) }
+        verify { memoryCache.get(any(), REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE) }
+        verify { diskCache.get(any(), REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE) }
 
         assertNull(bitmap)
     }
@@ -45,11 +44,10 @@ class DoubleCacheTest {
         val bitmap = mockk<Bitmap>()
         doubleCache.put("test.png", bitmap)
 
-        val reqSize = 100 // todo
-        val cachedBitmap = doubleCache.get("test.png", reqSize, reqSize)
+        val cachedBitmap = doubleCache.get("test.png", REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE)
 
-        verify(exactly = 1) { memoryCache.get(any(), reqSize, reqSize) }
-        verify(exactly = 0) { diskCache.get(any(), reqSize, reqSize) }
+        verify(exactly = 1) { memoryCache.get(any(), REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE) }
+        verify(exactly = 0) { diskCache.get(any(), REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE) }
 
         assertNotNull(cachedBitmap)
     }
@@ -60,13 +58,16 @@ class DoubleCacheTest {
         every { diskCache.get(any(), any(), any()) } returns bitmap
         every { memoryCache.get(any(), any(), any()) } returns null
 
-        val reqSize = 100
-        val cachedBitmap = doubleCache.get("test.png", reqSize, reqSize)
+        val cachedBitmap = doubleCache.get("test.png", REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE)
 
-        verify(exactly = 1) { memoryCache.get(any(), reqSize, reqSize) }
+        verify(exactly = 1) { memoryCache.get(any(), REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE) }
         verify(exactly = 1) { memoryCache.put(any(), bitmap) }
-        verify(exactly = 1) { diskCache.get(any(), reqSize, reqSize) }
+        verify(exactly = 1) { diskCache.get(any(), REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE) }
 
         assertNotNull(cachedBitmap)
+    }
+
+    companion object {
+        private const val REQUIRE_BITMAP_SIZE = 100
     }
 }

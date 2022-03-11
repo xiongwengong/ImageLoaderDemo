@@ -7,16 +7,15 @@ class DoubleCache(
     private val diskCache: IImageCache
 ) : IImageCache {
 
-    override fun put(url: String, bitmap: Bitmap?) {
+    override fun put(url: String, bitmap: Bitmap) {
         memoryCache.put(url, bitmap)
         diskCache.put(url, bitmap)
     }
 
     override fun get(url: String, requireWidth: Int, requireHeight: Int): Bitmap? {
         return memoryCache.get(url, requireWidth, requireHeight)
-            ?: diskCache.get(url, requireWidth, requireHeight)
-                .also {
-                    memoryCache.put(url, it)
-                }
+            ?: diskCache.get(url, requireWidth, requireHeight)?.also {
+                memoryCache.put(url, it)
+            }
     }
 }

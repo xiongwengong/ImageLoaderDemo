@@ -1,17 +1,6 @@
 package com.example.imageloader.utils
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import java.io.FileDescriptor
-
-
-fun FileDescriptor.decodeSampleBitmapFromFileDescriptor(reqWidth: Int, reqHeight: Int): Bitmap? {  // todo
-    val options = BitmapFactory.Options().also { it.inJustDecodeBounds = true }
-    BitmapFactory.decodeFileDescriptor(this, null, options)
-    options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight)
-    options.inJustDecodeBounds = false
-    return BitmapFactory.decodeFileDescriptor(this, null, options)
-}
 
 fun calculateInSampleSize(
     options: BitmapFactory.Options,

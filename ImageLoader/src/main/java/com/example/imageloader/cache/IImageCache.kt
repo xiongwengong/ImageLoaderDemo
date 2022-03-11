@@ -11,7 +11,7 @@ interface IImageCache {
     /**
      *  cache bitmap
      */
-    fun put(url: String, bitmap: Bitmap?) // todo  null?
+    fun put(url: String, bitmap: Bitmap)
 
 
     /**
