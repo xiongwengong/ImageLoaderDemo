@@ -1,31 +1,50 @@
 package com.example.imageloader.request
 
-import android.graphics.Bitmap
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.LinkedBlockingQueue
+import android.os.Handler
+import android.os.Looper
+import com.example.imageloader.config.ImageCacheManager
+import java.util.concurrent.*
+import java.util.concurrent.atomic.AtomicInteger
 
 object RequestManager {
-    private const val MAX_THREAD_POOL_SIZE = 4
-    private val requestQueue = LinkedBlockingQueue<BitmapRequest>()
+    private val CORE_COUNT = Runtime.getRuntime().availableProcessors()
+    private val MAXIMUM_POOL_SIZE = CORE_COUNT * 2 + 1
 
     private lateinit var executorService: ExecutorService
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     init {
         initThreadExecutor()
     }
 
     private fun initThreadExecutor() {
-        executorService = Executors.newFixedThreadPool(MAX_THREAD_POOL_SIZE)
+        executorService = ThreadPoolExecutor(
+            1, MAXIMUM_POOL_SIZE, 10,
+            TimeUnit.SECONDS, LinkedBlockingQueue<Runnable>(), object : ThreadFactory {
+                private val count = AtomicInteger(1)
+                override fun newThread(r: Runnable?): Thread {
+                    return Thread(r, "ImageLoader#${count.getAndIncrement()}")
+                }
+            }
+        )
     }
 
     fun addRequest(bitmapRequest: BitmapRequest) {
-        println("RequestManager# addRequest")
-//        executorService.submit()
-    }
-
-    fun getBitmap(url: String, requireWidth: Int, requireHeight: Int): Bitmap? {
-        // TODO:
-        return null
+        bitmapRequest.url?.let { url ->
+            // todo
+            val downloadThread = BitmapDownloader(url) { bitmap ->
+                if (bitmap != null) {
+                    ImageCacheManager.imageCache?.put(url, bitmap)
+                    mainHandler.post {
+                        bitmapRequest.imageView.setImageBitmap(bitmap)
+                    }
+                } else if (bitmapRequest.errorPlaceholder != 0) {
+                    mainHandler.post {
+                        bitmapRequest.imageView.setImageResource(bitmapRequest.errorPlaceholder)
+                    }
+                }
+            }
+            executorService.submit(downloadThread)
+        }
     }
 }

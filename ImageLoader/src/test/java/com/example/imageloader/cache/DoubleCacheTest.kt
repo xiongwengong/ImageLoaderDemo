@@ -3,6 +3,7 @@ package com.example.imageloader.cache
 import android.graphics.Bitmap
 import io.mockk.MockKAnnotations
 import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
@@ -12,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 
 class DoubleCacheTest {
+    @InjectMockKs
     private lateinit var doubleCache: DoubleCache
 
     @MockK
@@ -23,7 +25,7 @@ class DoubleCacheTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxed = true)
-        doubleCache = DoubleCache(memoryCache, diskCache)
+//        doubleCache = DoubleCache(memoryCache, diskCache)
     }
 
     @Test

@@ -6,11 +6,13 @@ import java.security.MessageDigest
 
 class ByteArrayExtensionKtTest {
     @Test
-    fun `given valid ByteArray obj then return Hex String`() {
+    fun `given valid ByteArray obj when turn to hex string then return Hex String`() {
         val str = "https://test.test.png"
         val digest: MessageDigest = MessageDigest.getInstance("MD5")
         digest.update(str.toByteArray())
-        val hexStr = digest.digest().bytesToHexString()
+        val byteArray = digest.digest()
+
+        val hexStr = byteArray.bytesToHexString()
         assertFalse(hexStr.isEmpty())
     }
 }

@@ -10,8 +10,8 @@ import com.example.imageloader.config.genDefaultImageCache
 class BitmapRequest(context: Context) {
     var url: String? = null
     private var placeholder: Int = 0
-    private var errorPlaceholder: Int = 0
-    private lateinit var imageView: ImageView
+    var errorPlaceholder: Int = 0
+    lateinit var imageView: ImageView
 
     init {
         if (ImageCacheManager.imageCache == null) {

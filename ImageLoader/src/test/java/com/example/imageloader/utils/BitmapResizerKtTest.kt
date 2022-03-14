@@ -3,7 +3,7 @@ package com.example.imageloader.utils
 
 import android.graphics.BitmapFactory
 import io.mockk.mockk
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class BitmapResizerKtTest {
@@ -15,7 +15,7 @@ class BitmapResizerKtTest {
         options.outHeight = MOCKED_BITMAP_SIZE
 
         val inSimpleResult = calculateInSampleSize(options, 0, 0)
-        assertTrue(inSimpleResult == 1)
+        assertEquals(1, inSimpleResult)
     }
 
     @Test
@@ -26,7 +26,7 @@ class BitmapResizerKtTest {
 
         val inSimpleResult =
             calculateInSampleSize(options, REQUIRE_BITMAP_SIZE, REQUIRE_BITMAP_SIZE)
-        assertTrue(inSimpleResult == 8)
+        assertEquals(8, inSimpleResult)
     }
 
     companion object {
