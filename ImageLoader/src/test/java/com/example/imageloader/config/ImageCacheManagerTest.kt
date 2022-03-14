@@ -1,6 +1,7 @@
 package com.example.imageloader.config
 
 import com.example.imageloader.cache.IImageCache
+import com.example.imageloader.cache.ImageCacheManager
 import io.mockk.mockk
 import org.junit.Assert.*
 import org.junit.Test

@@ -1,6 +1,4 @@
-package com.example.imageloader.config
-
-import com.example.imageloader.cache.IImageCache
+package com.example.imageloader.cache
 
 object ImageCacheManager {
     var imageCache: IImageCache? = null

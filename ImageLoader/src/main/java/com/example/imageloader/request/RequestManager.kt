@@ -2,7 +2,8 @@ package com.example.imageloader.request
 
 import android.os.Handler
 import android.os.Looper
-import com.example.imageloader.config.ImageCacheManager
+import com.example.imageloader.cache.ImageCacheManager
+import com.example.imageloader.config.DisplayConfig
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -29,22 +30,21 @@ object RequestManager {
         )
     }
 
-    fun addRequest(bitmapRequest: BitmapRequest) {
-        bitmapRequest.url?.let { url ->
-            // todo
-            val downloadThread = BitmapDownloader(url) { bitmap ->
+    fun addRequest(displayConfig: DisplayConfig) {
+        displayConfig.url?.let { url ->
+            val downloader = BitmapDownloader(url) { bitmap ->
                 if (bitmap != null) {
                     ImageCacheManager.imageCache?.put(url, bitmap)
                     mainHandler.post {
-                        bitmapRequest.imageView.setImageBitmap(bitmap)
+                        displayConfig.imageView.setImageBitmap(bitmap)
                     }
-                } else if (bitmapRequest.errorPlaceholder != 0) {
+                } else if (displayConfig.errorPlaceholder != 0) {
                     mainHandler.post {
-                        bitmapRequest.imageView.setImageResource(bitmapRequest.errorPlaceholder)
+                        displayConfig.imageView.setImageResource(displayConfig.errorPlaceholder)
                     }
                 }
             }
-            executorService.submit(downloadThread)
+            executorService.submit(downloader)
         }
     }
 }
