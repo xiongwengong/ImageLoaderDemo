@@ -2,12 +2,16 @@ package com.example.imageloader.dispatcher
 
 import android.graphics.Bitmap
 import android.widget.ImageView
+import com.example.imageloader.ImageLoader
 import com.example.imageloader.cache.IImageCache
 import com.example.imageloader.cache.ImageCacheManager
 import com.example.imageloader.config.DisplayConfig
-import com.example.imageloader.request.RequestManager
+import com.example.imageloader.request.RequestExecutor
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,50 +29,74 @@ class LoaderDispatcherTest {
     @MockK
     lateinit var mockImageView: ImageView
 
+    @MockK
+    lateinit var mockBitmap: Bitmap
+
+    @MockK
+    lateinit var mockRequestExecutor: RequestExecutor
+
+    lateinit var loaderDispatcher: LoaderDispatcher
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxed = true)
 
+        loaderDispatcher = spyk(LoaderDispatcher(mockRequestExecutor))
+
         ImageCacheManager.updateCacheStrategy(imageCache)
 
-        displayConfig = DisplayConfig()
+        displayConfig = DisplayConfig(ImageLoader)
             .load("test.png")
             .errorPlaceholder(1)
             .placeholder(2)
         displayConfig.imageView = mockImageView
     }
 
-
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `given empty url when load bitmap then show error placeholder`() {
-        displayConfig.url = ""
+    fun `given null when invoke loadBitmap then show error placeholder`() = runTest {
+        coEvery { loaderDispatcher.loadBitmap(any()) } returns null
+        loaderDispatcher.loadBitmapIntoView(displayConfig)
 
-        LoaderDispatcher.loadBitmap(displayConfig)
-
-        verify { mockImageView.setImageResource(1) }
+        verify {
+            mockImageView.setImageResource(2)
+            mockImageView.setImageResource(1)
+        }
         verify(exactly = 0) { imageCache.get(any(), any(), any()) }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `given valid url and exist cached bitmap when load bitmap then show cached bitmap`() {
-        val mockBitmap = mockk<Bitmap>()
+    fun `given valid bitmap when invoke loadBitmap then show returned bitmap`() = runTest {
+        coEvery { loaderDispatcher.loadBitmap(any()) } returns (mockBitmap)
+        loaderDispatcher.loadBitmapIntoView(displayConfig)
+        verify {
+            mockImageView.setImageResource(2)
+            mockImageView.setImageBitmap(mockBitmap)
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `given exist cached bitmap when load bitmap then show cached bitmap`() = runTest {
         every { imageCache.get(any(), any(), any()) } returns (mockBitmap)
-
-        LoaderDispatcher.loadBitmap(displayConfig)
-
-        verify { mockImageView.setImageBitmap(mockBitmap) }
+        val bitmap = loaderDispatcher.loadBitmap("")
+        assertEquals(mockBitmap, bitmap)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `given valid url and not exist cached bitmap when load bitmap then show bitmap from network`() {
-        mockkObject(RequestManager,)
-        every { RequestManager.addRequest(displayConfig) } just runs
+    fun `given valid url and not exist cached bitmap when load bitmap then show bitmap from network`() =
+        runTest {
+            every { imageCache.get(any(), any(), any()) } returns (null)
+            coEvery { mockRequestExecutor.getResults(any()) } returns mockk()
+            coEvery { mockRequestExecutor.convertInputStreamToBitmap(any()) } returns mockBitmap
 
-        every { imageCache.get(any(), any(), any()) } returns (null)
-
-        LoaderDispatcher.loadBitmap(displayConfig)
-
-        verify(exactly = 0) { mockImageView.setImageBitmap(any()) }
-        verify { RequestManager.addRequest(displayConfig) }
-    }
+            val bitmap = loaderDispatcher.loadBitmap("")
+            assertEquals(mockBitmap, bitmap)
+            coVerify {
+                mockRequestExecutor.getResults(any())
+                mockRequestExecutor.convertInputStreamToBitmap(any())
+            }
+        }
 }

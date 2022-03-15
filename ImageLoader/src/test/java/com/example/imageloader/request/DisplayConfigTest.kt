@@ -1,33 +1,33 @@
 package com.example.imageloader.request
 
 import android.widget.ImageView
+import com.example.imageloader.ImageLoader
 import com.example.imageloader.config.DisplayConfig
-import com.example.imageloader.dispatcher.LoaderDispatcher
 import io.mockk.*
+import io.mockk.impl.annotations.MockK
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
-@RunWith(RobolectricTestRunner::class)
-@Config(manifest = "src/main/AndroidManifest.xml")
 class DisplayConfigTest {
     private lateinit var displayConfig: DisplayConfig
+
+    @MockK
     private lateinit var mockedImageView: ImageView
+
+    @MockK
+    private lateinit var mockedImageLoader: ImageLoader
 
     @Before
     fun setUp() {
-        mockedImageView = mockk()
-        displayConfig = DisplayConfig()
+        MockKAnnotations.init(this, relaxed = true)
+        displayConfig = DisplayConfig(mockedImageLoader)
     }
 
 
     @Test
     fun `given configured DisplayConfig when load bitmap then do dispatch`() {
-        mockkObject(LoaderDispatcher)
-        every { LoaderDispatcher.loadBitmap(any(),any(),any()) } just runs
+        every { mockedImageLoader.dispatch(any(),any(),any()) } just runs
 
         displayConfig.load(TEST_URL)
             .placeholder(PLACEHOLDER)
@@ -35,7 +35,7 @@ class DisplayConfigTest {
             .into(mockedImageView)
 
         val slot = slot<DisplayConfig>()
-        verify { LoaderDispatcher.loadBitmap(capture(slot)) }
+        verify { mockedImageLoader.dispatch(capture(slot),any(),any()) }
 
         val argumentCapture = slot.captured
         assertEquals(ERROR_PLACEHOLDER, argumentCapture.errorPlaceholder)

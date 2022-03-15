@@ -7,7 +7,7 @@ import com.example.imageloader.cache.IImageCache
 import com.example.imageloader.cache.MemoryCache
 import java.io.File
 
-fun genDefaultImageCache(context: Context): IImageCache {
+fun getDefaultImageCache(context: Context): IImageCache {
     val maxMemory = Runtime.getRuntime().maxMemory() / 1024 // unit:kb
     val memoryCache = MemoryCache((maxMemory / 10).toInt())
 
