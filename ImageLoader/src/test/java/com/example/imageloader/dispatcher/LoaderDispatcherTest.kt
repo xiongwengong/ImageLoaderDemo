@@ -89,13 +89,13 @@ class LoaderDispatcherTest {
     fun `given valid url and not exist cached bitmap when load bitmap then show bitmap from network`() =
         runTest {
             every { imageCache.get(any(), any(), any()) } returns (null)
-            coEvery { mockRequestExecutor.getResults(any()) } returns mockk()
+            coEvery { mockRequestExecutor.getBitmapInputStream(any()) } returns mockk()
             coEvery { mockRequestExecutor.convertInputStreamToBitmap(any()) } returns mockBitmap
 
             val bitmap = loaderDispatcher.loadBitmap("")
             assertEquals(mockBitmap, bitmap)
             coVerify {
-                mockRequestExecutor.getResults(any())
+                mockRequestExecutor.getBitmapInputStream(any())
                 mockRequestExecutor.convertInputStreamToBitmap(any())
             }
         }

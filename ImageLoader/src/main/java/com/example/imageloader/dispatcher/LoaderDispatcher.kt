@@ -35,12 +35,14 @@ class LoaderDispatcher(
         return withContext(dispatcher) {
             var bitmap: Bitmap? =
                 ImageCacheManager.imageCache?.get(url, requireWidth, requireHeight)
+            println("===> cache for $url : cacheBitmap = $bitmap")
             if (bitmap == null) {
                 println("===>can not find cache for $url ,try to get form network.")
-                bitmap = requestExecutor.getResults(url)?.run {
+                bitmap = requestExecutor.getBitmapInputStream(url)?.run {
                     requestExecutor.convertInputStreamToBitmap(this)
                 }?.also {
-                    ImageCacheManager.imageCache?.put(url,it)
+                    println("===> load success!! url= $url")
+                    ImageCacheManager.imageCache?.put(url, it)
                 }
             }
             return@withContext bitmap
