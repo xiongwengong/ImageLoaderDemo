@@ -7,37 +7,48 @@ import com.example.imageloader.config.DisplayConfig
 import com.example.imageloader.config.getDefaultImageCache
 import com.example.imageloader.dispatcher.LoaderDispatcher
 import com.example.imageloader.request.RequestExecutor
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
-object ImageLoader {
+class ImageLoader private constructor(
+    private val loaderDispatcher: LoaderDispatcher,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Main
+) {
 
-    private lateinit var loaderDispatcher: LoaderDispatcher
-    private var initialize: Boolean = false
+    companion object {
+        private var loader: ImageLoader? = null
 
-    fun with(context: Context): DisplayConfig {
-        init(context)
-        return DisplayConfig(this)
-    }
-
-    fun configGlobalCacheStrategy(imageCache: IImageCache) =
-        ImageCacheManager.updateCacheStrategy(imageCache)
-
-    private fun init(context: Context) {
-        if (!initialize) {
-            if (ImageCacheManager.imageCache == null) {
-                configGlobalCacheStrategy(getDefaultImageCache(context))
-            }
-            loaderDispatcher = LoaderDispatcher(RequestExecutor())
-            initialize = true
+        fun with(context: Context): DisplayConfig {
+            return get(context).createDisplayConfig()
         }
+
+        fun get(
+            context: Context,
+            requestExecutor: RequestExecutor = RequestExecutor(),
+            loaderDispatcher: LoaderDispatcher = LoaderDispatcher(requestExecutor)
+        ): ImageLoader {
+            if (loader == null) {
+                loader = ImageLoader(loaderDispatcher).also {
+                    if (ImageCacheManager.imageCache == null) {
+                        configGlobalCacheStrategy(getDefaultImageCache(context))
+                    }
+                }
+            }
+            return loader!!
+        }
+
+        fun configGlobalCacheStrategy(imageCache: IImageCache) =
+            ImageCacheManager.updateCacheStrategy(imageCache)
+
     }
+
+    fun createDisplayConfig(): DisplayConfig {
+        return DisplayConfig(loader!!)
+    }
+
 
     @OptIn(DelicateCoroutinesApi::class)
     fun dispatch(displayConfig: DisplayConfig, requireWidth: Int = 0, requireHeight: Int = 0) {
-        GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(dispatcher) {
             loaderDispatcher.loadBitmapIntoView(
                 displayConfig,
                 requireWidth,

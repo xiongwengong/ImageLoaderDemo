@@ -2,7 +2,6 @@ package com.example.imageloader.dispatcher
 
 import android.graphics.Bitmap
 import android.widget.ImageView
-import com.example.imageloader.ImageLoader
 import com.example.imageloader.cache.IImageCache
 import com.example.imageloader.cache.ImageCacheManager
 import com.example.imageloader.config.DisplayConfig
@@ -14,12 +13,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
-@RunWith(RobolectricTestRunner::class)
-@Config(manifest = "src/main/AndroidManifest.xml")
 class LoaderDispatcherTest {
     private lateinit var displayConfig: DisplayConfig
 
@@ -35,7 +29,7 @@ class LoaderDispatcherTest {
     @MockK
     lateinit var mockRequestExecutor: RequestExecutor
 
-    lateinit var loaderDispatcher: LoaderDispatcher
+    private lateinit var loaderDispatcher: LoaderDispatcher
 
     @Before
     fun setUp() {
@@ -45,7 +39,7 @@ class LoaderDispatcherTest {
 
         ImageCacheManager.updateCacheStrategy(imageCache)
 
-        displayConfig = DisplayConfig(ImageLoader)
+        displayConfig = DisplayConfig(mockk())
             .load("test.png")
             .errorPlaceholder(1)
             .placeholder(2)

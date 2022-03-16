@@ -17,6 +17,7 @@ class LoaderDispatcher(
         requireHeight: Int = 0
     ) {
         with(displayConfig) {
+            println("===> loadBitmapIntoView url: ${displayConfig.url}")
             imageView.setImageResource(placeholder)
             val bitmap = loadBitmap(url, requireWidth, requireHeight)
             if (bitmap != null) {
@@ -41,7 +42,7 @@ class LoaderDispatcher(
                 bitmap = requestExecutor.getBitmapInputStream(url)?.run {
                     requestExecutor.convertInputStreamToBitmap(this)
                 }?.also {
-                    println("===> load success!! url= $url")
+                    println("===> load from network success!! url= $url")
                     ImageCacheManager.imageCache?.put(url, it)
                 }
             }
