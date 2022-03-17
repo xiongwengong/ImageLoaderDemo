@@ -4,7 +4,7 @@ apply plugin: 'jacoco'
  * to run this task use: ./gradlew clean jacocoTestReport
  */
 jacoco {
-    toolVersion = rootProject.jacocoVersion
+    toolVersion = "0.8.7"
 }
 
 def fileFilter = [
