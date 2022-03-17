@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 
 def artifactId = 'imageloader'
 def groupId = 'com.xwg.example.imageloader'
-def versionNum = '1.0.3'
+def versionNum = '1.0.0'
 
 project.afterEvaluate {
     publishing {
@@ -13,7 +13,7 @@ project.afterEvaluate {
                 setArtifactId artifactId
                 version versionNum
 
-//                artifact bundleReleaseAar
+                artifact bundleReleaseAar
 
                 pom.withXml {
                     def dependenciesNode = asNode().appendNode('dependencies')
