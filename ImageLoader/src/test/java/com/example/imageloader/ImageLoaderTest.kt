@@ -34,10 +34,6 @@ class ImageLoaderTest {
         imageLoader = ImageLoader.get(context, loaderDispatcher = loaderDispatcher)
     }
 
-    @Test
-    fun `should return new DisplayConfig when invoke createDisplayConfig`() {
-        assertNotNull(imageLoader.createDisplayConfig())
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test

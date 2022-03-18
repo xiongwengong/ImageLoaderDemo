@@ -2,12 +2,12 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
-ext{
-    robolectricVersion ='4.6'
+ext {
+    robolectricVersion = '4.6'
     coroutinesVersion = '1.6.0'
 }
 android {
-    compileSdk 30
+    compileSdk 31
 
     defaultConfig {
         minSdk 21

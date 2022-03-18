@@ -38,7 +38,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ["testDebugUnitTest"]) {
         html.enabled = true
     }
 
-    sourceDirectories.from = files([mainSrc,debugSrc])
+    sourceDirectories.from = files([mainSrc, debugSrc])
     classDirectories.from = files([javaDebugTree, kotlinDebugTree])
 
     executionData.from = fileTree(dir: "$buildDir", includes: [
@@ -61,3 +61,30 @@ task openJacocoTestReport {
         exec { commandLine 'open', "$path" }
     }
 }
+
+task jacocoTestCoverageVerification(type: JacocoCoverageVerification) {
+    group = "Reporting"
+    dependsOn = ['jacocoTestReport']
+    enabled = true
+
+    sourceDirectories.from = files([mainSrc, debugSrc])
+    classDirectories.from = files([javaDebugTree, kotlinDebugTree])
+
+    executionData.from = fileTree(dir: "$buildDir", includes: [
+            'jacoco/testDebugUnitTest.exec',
+            'outputs/code_coverage/debugAndroidTest/connected/*coverage.ec'
+    ])
+
+    violationRules {
+        failOnViolation = true
+        rule {
+            limit {
+                minimum = 0.7
+                counter = 'LINE'
+            }
+        }
+    }
+}
+
+// to run coverage verification during the build (and fail when appropriate)
+check.dependsOn jacocoTestCoverageVerification

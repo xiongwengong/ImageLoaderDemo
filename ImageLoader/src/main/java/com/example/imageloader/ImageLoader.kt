@@ -15,10 +15,12 @@ class ImageLoader private constructor(
 ) {
 
     companion object {
-        private var loader: ImageLoader? = null
 
+        private lateinit var loader: ImageLoader
+
+        @JvmStatic
         fun with(context: Context): DisplayConfig {
-            return get(context).createDisplayConfig()
+            return DisplayConfig(get(context))
         }
 
         fun get(
@@ -26,25 +28,21 @@ class ImageLoader private constructor(
             requestExecutor: RequestExecutor = RequestExecutor(),
             loaderDispatcher: LoaderDispatcher = LoaderDispatcher(requestExecutor)
         ): ImageLoader {
-            if (loader == null) {
+            if (!::loader.isInitialized) {
                 loader = ImageLoader(loaderDispatcher).also {
                     if (ImageCacheManager.imageCache == null) {
                         configGlobalCacheStrategy(getDefaultImageCache(context))
                     }
                 }
             }
-            return loader!!
+            return loader
         }
 
+        @JvmStatic
         fun configGlobalCacheStrategy(imageCache: IImageCache) =
             ImageCacheManager.updateCacheStrategy(imageCache)
 
     }
-
-    fun createDisplayConfig(): DisplayConfig {
-        return DisplayConfig(loader!!)
-    }
-
 
     @OptIn(DelicateCoroutinesApi::class)
     fun dispatch(displayConfig: DisplayConfig, requireWidth: Int = 0, requireHeight: Int = 0) {
