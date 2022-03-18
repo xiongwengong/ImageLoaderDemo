@@ -95,8 +95,7 @@ pipeline {
             steps {
                 echo 'execut UT'
                 sh "/Users/xxxxx/Documents/jenkins/dev/gradle/gradle-7.2/bin/gradle jacocoTestCoverageVerification  -PnotCheck=true "
-
-                //  jacoco buildOverBuild: true, classPattern: 'ImageLoader/build/intermediates/javac/debug,ImageLoader/build/tmp/kotlin-classes/debug', deltaLineCoverage: '20', minimumLineCoverage: '50', sourceInclusionPattern: '', sourcePattern: 'ImageLoader/src/main/java,ImageLoader/src/debug/java'
+                jacoco buildOverBuild: true, classPattern: 'ImageLoader/build/intermediates/javac/debug,ImageLoader/build/tmp/kotlin-classes/debug', deltaLineCoverage: '20', minimumLineCoverage: '50', sourceInclusionPattern: '', sourcePattern: 'ImageLoader/src/main/java,ImageLoader/src/debug/java'
             }
         }
         
