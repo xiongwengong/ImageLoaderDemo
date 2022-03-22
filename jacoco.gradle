@@ -83,7 +83,7 @@ task jacocoTestCoverageVerification(type: JacocoCoverageVerification) {
         failOnViolation = true
         rule {
             limit {
-                minimum = 0.7
+                minimum = 0.700
                 counter = 'LINE'
             }
         }
