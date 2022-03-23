@@ -47,10 +47,6 @@ class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageHolder>() {
                 .errorPlaceholder(R.mipmap.error)
                 .placeholder(R.mipmap.placeholder)
                 .into(it)
-
-//            Glide.with(it.context)
-//                .load(url)
-//                .into(it)
         }
     }
 
