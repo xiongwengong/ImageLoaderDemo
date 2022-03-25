@@ -30,11 +30,12 @@ pipeline {
         stage('Deploy maven and release apk?') {
             environment {
                 CAUSE = "${currentBuild.getBuildCauses()[0].shortDescription}"
-                BRANCH_NAME = "${GIT_BRANCH.split("/")[1]}"
+//                BRANCH_NAME = "${GIT_BRANCH.split("/")[1]}"
             }
 
             steps {
                 echo "Build caused by:  ${env.CAUSE}"
+                echo "current GIT_BRANCH:  ${env.GIT_BRANCH}"
                 echo "current BRANCH_NAME:  ${env.BRANCH_NAME}"
 
                 script {
