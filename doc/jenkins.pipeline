@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('check out') {
+            steps {
+                checkout([$class           : 'GitSCM', branches: [[name: '*/master']],
+                          userRemoteConfigs: [[url: 'https://github.com/xiongwengong/ImageLoaderDemo.git']]])
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh "/Users/wengong.xiong./Documents/jenkins/dev/gradle/gradle-7.2/bin/gradle clean assembleRelease  -PnotCheck=true "
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                echo 'execut UT'
+                sh "/Users/wengong.xiong./Documents/jenkins/dev/gradle/gradle-7.2/bin/gradle jacocoTestCoverageVerification  -PnotCheck=true "
+
+                jacoco buildOverBuild: true, classPattern: 'ImageLoader/build/intermediates/javac/debug,ImageLoader/build/tmp/kotlin-classes/debug', deltaLineCoverage: '20', minimumLineCoverage: '50', sourceInclusionPattern: '', sourcePattern: 'ImageLoader/src/main/java,ImageLoader/src/debug/java'
+
+                //jacoco buildOverBuild: true, deltaLineCoverage: '20', minimumLineCoverage: '50', sourceInclusionPattern: '', sourcePattern: '/Users/wengong.xiong./.jenkins/workspace/ImageLoaderDemoTest-p/ImageLoader/src/main/java'
+            }
+        }
+
+        stage('Deploy maven and realase apk?') {
+            environment {
+                CAUSE = "${currentBuild.getBuildCauses()[0].shortDescription}"
+            }
+
+            steps {
+                echo "Build caused by:  ${env.CAUSE}"
+
+                script {
+
+                    def isTriggerByAuto = "${env.CAUSE}".startsWith('Started by GitHub push by')
+
+                    if (isTriggerByAuto) {
+                        echo "Build caused by GithubHub push}"
+                        input "Can be deploy into product environment?"
+                    }
+                }
+                echo " Deploy ====>>>>>>>>>>"
+            }
+        }
+
+        stage('publish local maven') {
+            steps {
+                sh "/Users/wengong.xiong./Documents/jenkins/dev/gradle/gradle-7.2/bin/gradle publishToMavenLocal  -PnotCheck=true "
+            }
+        }
+
+        stage('genetate signed apk') {
+            steps {
+                sh "/Users/wengong.xiong./Documents/jenkins/dev/gradle/gradle-7.2/bin/gradle clean assembleRelease  -PnotCheck=true "
+            }
+        }
+    }
+}
