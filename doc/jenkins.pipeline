@@ -18,7 +18,7 @@ pipeline {
 
         stage('Unit Test') {
             steps {
-                echo 'execut UT'
+                echo 'execute UT'
                 sh "/Users/wengong.xiong./Documents/jenkins/dev/gradle/gradle-7.2/bin/gradle jacocoTestCoverageVerification  -PnotCheck=true "
 
                 jacoco buildOverBuild: true, classPattern: 'ImageLoader/build/intermediates/javac/debug,ImageLoader/build/tmp/kotlin-classes/debug', deltaLineCoverage: '20', minimumLineCoverage: '50', sourceInclusionPattern: '', sourcePattern: 'ImageLoader/src/main/java,ImageLoader/src/debug/java'
@@ -27,7 +27,7 @@ pipeline {
             }
         }
 
-        stage('Deploy maven and realase apk?') {
+        stage('Deploy maven and release apk?') {
             environment {
                 CAUSE = "${currentBuild.getBuildCauses()[0].shortDescription}"
             }
@@ -54,7 +54,7 @@ pipeline {
             }
         }
 
-        stage('genetate signed apk') {
+        stage('generate signed apk') {
             steps {
                 sh "/Users/wengong.xiong./Documents/jenkins/dev/gradle/gradle-7.2/bin/gradle clean assembleRelease  -PnotCheck=true "
             }
