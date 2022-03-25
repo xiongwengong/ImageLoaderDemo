@@ -30,23 +30,20 @@ pipeline {
         stage('Deploy maven and release apk?') {
             environment {
                 CAUSE = "${currentBuild.getBuildCauses()[0].shortDescription}"
-//                BRANCH_NAME = "${GIT_BRANCH.split("/")[1]}"
             }
 
             steps {
                 echo "Build caused by:  ${env.CAUSE}"
-                echo "current GIT_BRANCH:  ${env.GIT_BRANCH}"
-                echo "current BRANCH_NAME:  ${env.BRANCH_NAME}"
+                echo "current BRANCH_NAME:  ${env.GIT_BRANCH}"
 
                 script {
-                    def isMasterBranch = '${env.BRANCH_NAME}' == 'master'
+                    def isMasterBranch = '${env.GIT_BRANCH}' == 'master'
                     echo "isMasterBranch = ${isMasterBranch} "
                     if (isMasterBranch) {
                         echo "build master branch need to confirm by user ---->>> "
                         input "Can be deploy into product environment?"
                     }
 //                    def isTriggerByAuto = "${env.CAUSE}".startsWith('Started by GitHub push by')
-//
 //                    if (isTriggerByAuto) {
 //                        echo "Build caused by GithubHub push}"
 //                        input "Can be deploy into product environment?"
