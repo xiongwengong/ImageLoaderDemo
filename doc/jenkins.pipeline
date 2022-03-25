@@ -3,12 +3,12 @@ pipeline {
 
     stages {
 
-        stage('check out') {
-            steps {
-                checkout([$class           : 'GitSCM', branches: [[name: '*/master']],
-                          userRemoteConfigs: [[url: 'https://github.com/xiongwengong/ImageLoaderDemo.git']]])
-            }
-        }
+//        stage('check out') {
+//            steps {
+//                checkout([$class           : 'GitSCM', branches: [[name: '*/master']],
+//                          userRemoteConfigs: [[url: 'https://github.com/xiongwengong/ImageLoaderDemo.git']]])
+//            }
+//        }
 
         stage('Build') {
             steps {
