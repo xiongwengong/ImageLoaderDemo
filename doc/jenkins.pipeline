@@ -34,15 +34,20 @@ pipeline {
 
             steps {
                 echo "Build caused by:  ${env.CAUSE}"
+                echo "current BRANCH_NAME:  ${env.GIT_BRANCH}"
 
                 script {
-
-                    def isTriggerByAuto = "${env.CAUSE}".startsWith('Started by GitHub push by')
-
-                    if (isTriggerByAuto) {
-                        echo "Build caused by GithubHub push}"
+                    def isMasterBranch = '${env.GIT_BRANCH}' == 'master'
+                    echo "isMasterBranch = ${isMasterBranch} "
+                    if (isMasterBranch) {
+                        echo "build master branch need to confirm by user ---->>> "
                         input "Can be deploy into product environment?"
                     }
+//                    def isTriggerByAuto = "${env.CAUSE}".startsWith('Started by GitHub push by')
+//                    if (isTriggerByAuto) {
+//                        echo "Build caused by GithubHub push}"
+//                        input "Can be deploy into product environment?"
+//                    }
                 }
                 echo " Deploy ====>>>>>>>>>>"
             }
