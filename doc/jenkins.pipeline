@@ -37,7 +37,7 @@ pipeline {
                 echo "current BRANCH_NAME:  ${env.GIT_BRANCH}"
 
                 script {
-                    def isMasterBranch = '${env.GIT_BRANCH}' == 'master'
+                    def isMasterBranch = "master".equalsIgnoreCase("${env.GIT_BRANCH}")
                     echo "isMasterBranch = ${isMasterBranch} "
                     if (isMasterBranch) {
                         echo "build master branch need to confirm by user ---->>> "
