@@ -74,8 +74,9 @@ fun getFakeData(): List<GridItemData> {
 
 fun getUrlData(): List<String> {
     val imageUrlList = mutableListOf<String>()
-    imageUrlList.add("https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg")
+    imageUrlList.add("https://images.669pic.com/element_banner/97/96/43/73/1c756b0e6d60d9163b7c7cbd16c4de51.jpg")
     imageUrlList.add("https://ress.zhangu365.com/zhangu/txb/template/pre/20210322/75439ece15454540b1ba721fb34fb872.jpg?v=1616385307&x-oss-process=image/resize,w_400")
+    imageUrlList.add("https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg")
     imageUrlList.add("https://st3.depositphotos.com/2288675/14698/i/1600/depositphotos_146980809-stock-photo-which-way-to-go-road.jpg")
     imageUrlList.add("https://vimsky.com/wp-content/uploads/2019/10/A-23.jpg")
     imageUrlList.add("https://img.mp.itc.cn/upload/20170721/2b094839efb54fb18c53bbc0067939cc_th.jpg")
