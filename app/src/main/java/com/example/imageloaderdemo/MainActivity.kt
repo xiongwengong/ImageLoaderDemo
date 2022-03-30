@@ -1,5 +1,6 @@
 package com.example.imageloaderdemo
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import com.example.imageloaderdemo.adpater.ImagesAdapter
+import com.example.imageloaderdemo.ui.moment.ComposeMomentActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +23,10 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_load_pic).setOnClickListener {
             imagesAdapter.imageUrlList = getFakeData()
+        }
+
+        findViewById<Button>(R.id.btn_start_compose_page).setOnClickListener {
+            startActivity(Intent(this, ComposeMomentActivity::class.java))
         }
     }
 
