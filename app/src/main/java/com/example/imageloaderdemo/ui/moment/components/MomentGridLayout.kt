@@ -1,39 +1,26 @@
 package com.example.imageloaderdemo.ui.moment.components
 
-import androidx.annotation.IntRange
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun <T> NineGridLayout(
+fun <T> MomentGridLayout(
     modifier: Modifier = Modifier,
     itemDataList: List<T>,
     itemSpacing: Dp = 5.dp,
-    @IntRange(from = 1, to = 9) maxShowCount:  Int  = 9,
-    content: @Composable (position: Int, subData: List<T>) -> Unit
+    maxShowCount: Int = 9,
+    content: @Composable (subData: List<T>) -> Unit
 ) {
 
     val itemCount = if (itemDataList.size > maxShowCount) maxShowCount else itemDataList.size
     Layout(
         content = {
             val subData = itemDataList.subList(0, itemCount)
-
-            subData.forEachIndexed { index, _ ->
-                Box(
-                    modifier = Modifier
-                        .background(Color.Black),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    content(index, subData)
-                }
-            }
+            content(subData)
         },
         modifier = modifier
             .fillMaxWidth()

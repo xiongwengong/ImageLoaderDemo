@@ -72,16 +72,19 @@ fun Tweet(tweet: Tweet, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(10.dp))
         }
         tweet.images?.also {
-            NineGridLayout(itemDataList = it) { position, subData ->
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(subData[position].url)
-                        .placeholder(R.drawable.photo_architecture)
-                        .error(R.drawable.photo_architecture)
-                        .build(),
-                    contentDescription = subData[position].url,
-                    contentScale = if (subData.size == 1) ContentScale.Fit else ContentScale.Crop,
-                )
+            MomentGridLayout(itemDataList = it) { subData ->
+                subData.forEach{ tweetImage->
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(tweetImage.url)
+                            .placeholder(R.drawable.photo_architecture)
+                            .error(R.drawable.photo_architecture)
+                            .build(),
+                        contentDescription = tweetImage.url,
+                        contentScale = if (subData.size == 1) ContentScale.Fit else ContentScale.Crop,
+                    )
+                }
+
             }
             Spacer(modifier = Modifier.height(10.dp))
         }
