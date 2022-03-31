@@ -1,47 +1,42 @@
 package com.example.imageloaderdemo.ui.moment.components
 
+import androidx.annotation.IntRange
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.example.imageloaderdemo.R
 
 @Composable
-fun NineGridLayout(
+fun <T> NineGridLayout(
     modifier: Modifier = Modifier,
-    itemDataList: List<GridItemData>,
+    itemDataList: List<T>,
     itemSpacing: Dp = 5.dp,
-    maxShowCount: Int = 9,
-    content: @Composable (itemData: GridItemData, contentScale: ContentScale) -> Unit = defaultImageViewFunc
+    @IntRange(from = 1, to = 9) maxShowCount:  Int  = 9,
+    content: @Composable (position: Int, subData: List<T>) -> Unit
 ) {
 
     val itemCount = if (itemDataList.size > maxShowCount) maxShowCount else itemDataList.size
     Layout(
         content = {
-            itemDataList.subList(0, itemCount).forEach {
+            val subData = itemDataList.subList(0, itemCount)
+
+            subData.forEachIndexed { index, _ ->
                 Box(
                     modifier = Modifier
-                        .background(Color.Red)
-                        .padding(2.dp),
+                        .background(Color.Black),
                     contentAlignment = Alignment.Center,
                 ) {
-                    content(it, if (itemCount == 1) ContentScale.Fit else ContentScale.Crop)
+                    content(index, subData)
                 }
             }
         },
         modifier = modifier
             .fillMaxWidth()
-            .background(color = Color.DarkGray)
     ) { measurables, constraints ->
 
         var (itemHeight, itemWidth, rowCount) = LayoutCalculator(
@@ -51,17 +46,16 @@ fun NineGridLayout(
             // Measure each children
             val itemConstraints =
                 constraints.copy(
-                    maxWidth = if (itemCount == 1) (constraints.maxWidth * 0.6f).toInt() else itemWidth,
-                    minWidth = itemWidth,
+                    maxWidth = if (itemCount == 1) (constraints.maxWidth * 0.7f).toInt() else itemWidth,
+                    minWidth = itemWidth / 2,
                     maxHeight = if (itemCount == 1) (constraints.maxWidth * 0.8f).toInt() else itemHeight,
-                    minHeight = itemHeight
+                    minHeight = itemHeight / 2
                 )
             val placeable = measurable.measure(itemConstraints)
             if (itemCount == 1) {
                 itemHeight = placeable.height
                 itemWidth = placeable.width
             }
-            println("=====item size : $itemWidth * $itemHeight")
             placeable
         }
 
@@ -119,21 +113,3 @@ private fun calculateXPos(
     }
     return currentIndex % 3 * (itemWidth + itemSpacing).toInt()
 }
-
-private val defaultImageViewFunc: @Composable (gridItemData: GridItemData, contentScale: ContentScale) -> Unit =
-    { it, contentScale ->
-        println("=====image url ===${it.url}")
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(it.url)
-                .placeholder(R.drawable.photo_architecture)
-                .error(R.drawable.photo_architecture)
-                .build(),
-            contentDescription = it.dec,
-            contentScale = contentScale,
-        )
-        Text(text = it.dec)
-    }
-
-
-data class GridItemData(val url: String, val dec: String = "")

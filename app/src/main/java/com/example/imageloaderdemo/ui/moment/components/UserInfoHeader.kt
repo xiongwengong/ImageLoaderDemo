@@ -19,7 +19,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.imageloaderdemo.R.*
-import com.example.imageloaderdemo.ui.moment.bean.UserInfo
+import com.example.imageloaderdemo.net.bean.UserInfo
 
 
 @Composable

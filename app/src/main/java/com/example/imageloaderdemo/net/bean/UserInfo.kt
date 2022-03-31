@@ -1,4 +1,4 @@
-package com.example.imageloaderdemo.ui.moment.bean
+package com.example.imageloaderdemo.net.bean
 
 import com.google.gson.annotations.SerializedName
 
