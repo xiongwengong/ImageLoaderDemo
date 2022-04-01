@@ -48,14 +48,14 @@ fun TweetInfoLayout(tweet: Tweet, modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun TweetInfoLayoutPreview() {
-    val tweets = MomentRepository().getTweets()
+    val tweets = MomentRepository().getLocalTweets()
     TweetInfoLayout(tweet = tweets.first())
 }
 
 @Preview
 @Composable
 private fun TweetPreview() {
-    val tweets = MomentRepository().getTweets()
+    val tweets = MomentRepository().getLocalTweets()
     Tweet(tweet = tweets.first())
 }
 
