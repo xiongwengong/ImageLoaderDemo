@@ -10,14 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import coil.size.Size
 import com.example.imageloaderdemo.R.*
 import com.example.imageloaderdemo.net.bean.UserInfo
 
@@ -29,7 +27,7 @@ fun UserInfoHeader(
 ) {
     ConstraintLayout(modifier) {
         val (profileBg, profileIcon, text) = createRefs()
-        AsyncImage(
+/*        AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(userInfo.profileBg)
                 .crossfade(true)
@@ -39,6 +37,20 @@ fun UserInfoHeader(
                 .build(),
             contentDescription = "header background",
             contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(bottom = 24.dp)
+                .constrainAs(profileBg) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
+        )*/
+
+        ImageComponent(
+            imageUrl = userInfo.profileBg,
+            placeHolder = drawable.ic_launcher_background,
+            errorHolder = drawable.ic_launcher_background,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
