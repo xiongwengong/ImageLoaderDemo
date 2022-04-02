@@ -1,6 +1,9 @@
 package com.example.imageloader
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.example.imageloader.cache.IImageCache
 import com.example.imageloader.cache.ImageCacheManager
 import com.example.imageloader.config.DisplayConfig
@@ -16,7 +19,10 @@ class ImageLoader private constructor(
 
     companion object {
 
+        @SuppressLint("StaticFieldLeak")
         private lateinit var loader: ImageLoader
+        @SuppressLint("StaticFieldLeak")
+        private lateinit var context: Context
 
         @JvmStatic
         fun with(context: Context): DisplayConfig {
@@ -29,6 +35,7 @@ class ImageLoader private constructor(
             loaderDispatcher: LoaderDispatcher = LoaderDispatcher(requestExecutor)
         ): ImageLoader {
             if (!::loader.isInitialized) {
+                this.context = context.applicationContext
                 loader = ImageLoader(loaderDispatcher).also {
                     if (ImageCacheManager.imageCache == null) {
                         configGlobalCacheStrategy(getDefaultImageCache(context))
@@ -44,7 +51,7 @@ class ImageLoader private constructor(
 
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @DelicateCoroutinesApi
     fun dispatch(displayConfig: DisplayConfig, requireWidth: Int = 0, requireHeight: Int = 0) {
         GlobalScope.launch(dispatcher) {
             loaderDispatcher.loadBitmapIntoView(
@@ -53,5 +60,13 @@ class ImageLoader private constructor(
                 requireHeight
             )
         }
+    }
+
+    suspend fun loadBitmap(url: String, reqWidth: Int = 0, reqHeight: Int = 0): Bitmap? {
+        return loaderDispatcher.loadBitmap(url, reqWidth, reqHeight)
+    }
+
+    fun loadBitmap(resId: Int): Bitmap? {
+        return BitmapFactory.decodeResource(context.resources, resId)
     }
 }
