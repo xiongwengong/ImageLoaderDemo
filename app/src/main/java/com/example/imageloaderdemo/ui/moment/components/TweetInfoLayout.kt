@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -26,17 +27,17 @@ import com.example.imageloaderdemo.theme.tweetSenderNameColor
 @Composable
 fun TweetInfoLayout(tweet: Tweet, modifier: Modifier = Modifier) {
     Row(modifier = modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 5.dp)) {
-    /*    AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(tweet.sender?.avatar)
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background)
-                .build(),
-            contentDescription = "sender profile icon",
-            modifier = Modifier
-                .size(50.dp)
-                .clip(RoundedCornerShape(5.dp))
-        )*/
+        /*    AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(tweet.sender?.avatar)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_background)
+                    .build(),
+                contentDescription = "sender profile icon",
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(5.dp))
+            )*/
         ImageComponent(
             imageUrl = tweet.sender?.avatar,
             placeHolder = R.drawable.ic_launcher_background,
@@ -44,8 +45,11 @@ fun TweetInfoLayout(tweet: Tweet, modifier: Modifier = Modifier) {
             modifier = Modifier
                 .size(50.dp)
                 .clip(RoundedCornerShape(5.dp))
+                .testTag("sender-profile")
         )
-        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(modifier = Modifier
+            .width(10.dp)
+            .testTag("SPACER"))
         Tweet(tweet)
     }
 }
@@ -65,7 +69,7 @@ private fun TweetPreview() {
 }
 
 @Composable
-fun Tweet(tweet: Tweet, modifier: Modifier = Modifier) {
+private fun Tweet(tweet: Tweet, modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(5.dp)) {
         Text(
             text = tweet.sender?.nick ?: "",
@@ -89,6 +93,7 @@ fun Tweet(tweet: Tweet, modifier: Modifier = Modifier) {
                              contentScale = if (subData.size == 1) ContentScale.Fit else ContentScale.Crop,
                          )*/
                     ImageComponent(
+                        modifier = Modifier.testTag("tweet-image"),
                         imageUrl = tweetImage.url,
                         placeHolder = R.mipmap.photo_architecture,
                         errorHolder = R.mipmap.photo_architecture,
@@ -109,7 +114,7 @@ fun Tweet(tweet: Tweet, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Comments(commentList: List<Comment>, modifier: Modifier = Modifier) {
+private fun Comments(commentList: List<Comment>, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -126,7 +131,7 @@ fun Comments(commentList: List<Comment>, modifier: Modifier = Modifier) {
                     append(": ${commentBean.content}")
                 }
             }
-            Text(text = annotationStr)
+            Text(text = annotationStr,Modifier.testTag("tweet-comment"))
         }
     }
 }

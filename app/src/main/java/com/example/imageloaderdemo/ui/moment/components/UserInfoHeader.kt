@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -52,6 +53,7 @@ fun UserInfoHeader(
             placeHolder = drawable.ic_launcher_background,
             errorHolder = drawable.ic_launcher_background,
             modifier = Modifier
+                .testTag("tag-profileBg")
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(bottom = 24.dp)
